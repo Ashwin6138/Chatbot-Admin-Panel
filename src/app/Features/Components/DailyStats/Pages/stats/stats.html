@@ -1,0 +1,152 @@
+<div class="daily-stats-container">
+  <!-- Navbar -->
+  <app-nav></app-nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1 class="page-title">SMART ASSIST</h1>
+
+    <!-- White Card - Navigation Tabs -->
+    <div class="navigation-card">
+      <div class="nav-tabs">
+        <button class="nav-tab" (click)="navigateToUpload()">
+          <mat-icon>upload_file</mat-icon>
+          Upload Document
+        </button>
+        <button class="nav-tab" (click)="navigateToKnowledgeBase()">
+          <mat-icon>auto_stories</mat-icon>
+          Knowledge Base Reset
+        </button>
+        <button class="nav-tab active" (click)="navigateToStats()">
+          <mat-icon>bar_chart</mat-icon>
+          Daily Stats
+        </button>
+      </div>
+    </div>
+
+    <!-- Daily Statistics Section -->
+    <div class="stats-section">
+      <h2 class="section-title">DAILY STATISTICS</h2>
+
+      <!-- Filter Bar -->
+      <div class="filters-bar">
+        <mat-form-field appearance="outline" class="filter-select date-filter">
+          <mat-label>Start Date</mat-label>
+          <input matInput 
+                 [matDatepicker]="startPicker" 
+                 [(ngModel)]="selectedStartDate"
+                 (dateChange)="applyFilter()">
+          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-select date-filter">
+          <mat-label>End Date</mat-label>
+          <input matInput 
+                 [matDatepicker]="endPicker" 
+                 [(ngModel)]="selectedEndDate"
+                 (dateChange)="applyFilter()">
+          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-select">
+          <mat-label>Department</mat-label>
+          <mat-select [(ngModel)]="selectedDepartment" (selectionChange)="applyFilter()">
+            <mat-option value="">All Departments</mat-option>
+            <mat-option *ngFor="let dept of departments" [value]="dept">
+              {{dept}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- <button mat-raised-button color="warn" (click)="clearFilters()">
+          <mat-icon>clear</mat-icon>
+          Clear Filters
+        </button> -->
+      </div>
+
+      <!-- Statistics Cards -->
+      <div class="stats-cards">
+        <div class="stat-card blue-card">
+          <div class="stat-label">Total Questions (Today)</div>
+          <div class="stat-value">{{totalQuestionsToday}}</div>
+        </div>
+
+        <div class="stat-card green-card">
+          <div class="stat-label">Successful Resolves (Today)</div>
+          <div class="stat-value">{{successfulResolvesToday}}</div>
+        </div>
+
+        <div class="stat-card red-card">
+          <div class="stat-label">Unresolved (Today)</div>
+          <div class="stat-value">{{unresolvedToday}}</div>
+        </div>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div *ngIf="isLoading" class="loading-container">
+        <mat-spinner></mat-spinner>
+      </div>
+
+      <!-- Data Table -->
+      <div class="table-container" *ngIf="!isLoading">
+        <table mat-table [dataSource]="dataSource" class="stats-table">
+          
+          <!-- S.No Column -->
+          <ng-container matColumnDef="sNo">
+            <th mat-header-cell *matHeaderCellDef>S.No.</th>
+            <td mat-cell *matCellDef="let element">{{element.sNo}}</td>
+          </ng-container>
+
+          <!-- Date Column -->
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td mat-cell *matCellDef="let element">{{element.date}}</td>
+          </ng-container>
+
+          <!-- Department Column -->
+          <ng-container matColumnDef="department">
+            <th mat-header-cell *matHeaderCellDef>Department</th>
+            <td mat-cell *matCellDef="let element">{{element.department}}</td>
+          </ng-container>
+
+          <!-- Total Questions Column -->
+          <ng-container matColumnDef="totalQuestions">
+            <th mat-header-cell *matHeaderCellDef>Total Questions</th>
+            <td mat-cell *matCellDef="let element">{{element.totalQuestions}}</td>
+          </ng-container>
+
+          <!-- Successful Resolves Column -->
+          <ng-container matColumnDef="successfulResolves">
+            <th mat-header-cell *matHeaderCellDef>Successful Resolves</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.successfulResolves}} ({{calculatePercentage(element.successfulResolves, element.totalQuestions)}})
+            </td>
+          </ng-container>
+
+          <!-- Unresolved Queries Column -->
+          <ng-container matColumnDef="unresolvedQueries">
+            <th mat-header-cell *matHeaderCellDef>Unresolved Queries</th>
+            <td mat-cell *matCellDef="let element">
+              {{element.unresolvedQueries}} ({{calculatePercentage(element.unresolvedQueries, element.totalQuestions)}})
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        
+        <mat-paginator class="paginator" 
+                       [pageSizeOptions]="[5, 10, 25, 50]"
+                       showFirstLastButtons>
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>Powered by BYT strategy group</p>
+  </div>
+</div>
