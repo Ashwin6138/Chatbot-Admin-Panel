@@ -1,0 +1,142 @@
+<div class="dashboard-container">
+
+<app-nav></app-nav>
+
+<!-- Main Content -->
+<div class="main-content">
+  <div class="container">
+    <!-- Single White Card Wrapper -->
+    <div class="white-card-wrapper">
+      
+      <!-- Feature Tabs -->
+      <div class="features-tabs">
+        <div class="feature-item">
+          <svg class="feature-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span>Upload Document</span>
+        </div>
+        
+        <div class="feature-item feature-active">
+          <svg class="feature-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          <span>Knowledge Base Reset</span>
+        </div>
+        
+        <div class="feature-item">
+          <svg class="feature-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span>Daily Stats</span>
+        </div>
+      </div>
+
+      <!-- Grey Inner Card for Knowledge Base Content -->
+      <div class="grey-inner-card">
+        <h2 class="upload-title">KNOWLEDGE BASE RESET</h2>
+
+        <div class="kb-content-wrapper">
+          <!-- Reset Knowledge Base Section -->
+          <div class="kb-section reset-section">
+            <div class="kb-section-header">
+              <div class="kb-icon-wrapper warning">
+                <svg class="kb-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                  <line x1="12" y1="9" x2="12" y2="13"></line>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+              </div>
+              <div class="kb-section-content">
+                <h3 class="kb-section-title">Reset Knowledge Base</h3>
+                <p class="kb-section-desc">This will completely reset the knowledge base. You must upload a new folder after resetting.</p>
+              </div>
+            </div>
+            <button class="reset-btn" (click)="handleReset()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="1 4 1 10 7 10"></polyline>
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+              </svg>
+              Reset Knowledge Base
+            </button>
+          </div>
+
+          <!-- Full KB Re-Ingest Section -->
+          <div class="kb-section reingest-section" [class.disabled]="!isResetClicked">
+            <div class="kb-section-header">
+              <div class="kb-icon-wrapper">
+                <svg class="kb-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </div>
+              <div class="kb-section-content">
+                <h3 class="kb-section-title">Full KB Re-Ingest</h3>
+                <p class="kb-section-desc">Upload a folder containing all documents to rebuild the knowledge base</p>
+              </div>
+            </div>
+            
+            <div class="folder-upload-area">
+              <div class="upload-icon-wrapper">
+                <svg class="upload-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </div>
+              <p class="folder-upload-text">Select a folder to upload</p>
+              <p class="folder-upload-subtext">Please reset the knowledge base first</p>
+              
+              <input 
+                type="file" 
+                id="folderInput"
+                class="file-input"
+                webkitdirectory
+                directory
+                multiple
+                [disabled]="!isResetClicked"
+                (change)="handleFolderSelect($event)">
+              
+              <button 
+                type="button" 
+                class="browse-folder-btn" 
+                [disabled]="!isResetClicked"
+                (click)="triggerFolderInput()">
+                Browse folder
+              </button>
+
+              <p *ngIf="selectedFolder && selectedFolder.length > 0" class="selected-file">
+                Selected: {{ selectedFolder.length }} files
+              </p>
+            </div>
+
+            <button 
+              class="upload-reingest-btn" 
+              [disabled]="!isResetClicked || !selectedFolder || selectedFolder.length === 0"
+              (click)="handleUploadAndReingest()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              Upload & Re-Ingest
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      Powered by BYT strategy group
+    </div>
+  </div>
+</div>
+
+</div>
