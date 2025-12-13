@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, tap, throwError, timeout } from 'rxjs';
+import { environment } from '../../../../Core/Environments/environment';
 
 export interface UploadResponse {
   status: string;
@@ -12,47 +13,34 @@ export interface UploadResponse {
   providedIn: 'root'
 })
 export class Up {
-  private apiUrl = 'https://vashti-unseethed-adjectively.ngrok-free.app/admin/upload';
+//   private apiUrl = 'https://vashti-unseethed-adjectively.ngrok-free.app/admin/upload';
+//  private readonly PREVIEW_BASE_URL = environment.PREVIEW_BASE_URL;
+//   constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) {}
 
-//  uploadDocument(file: File, department: string): Observable<UploadResponse> {
+
+// uploadDocument(file: File, department: string): Observable<UploadResponse> {
 //     const formData = new FormData();
 //     formData.append('file', file);
 //     formData.append('department', department);
 
-//     const headers = new HttpHeaders({
-//       'ngrok-skip-browser-warning': 'true'
-//     });
+    
 
-//     console.log('📤 Uploading to:', this.apiUrl);
-//     console.log('📄 File:', file.name);
-//     console.log('🏢 Department:', department);
-
-//     return this.http.post<UploadResponse>(this.apiUrl, formData, { headers }).pipe(
-//       tap(response => console.log('✅ Upload successful:', response)),
-//       catchError(error => {
-//         console.error('❌ Upload error:', error);
-//         return throwError(() => ({
-//           error: { 
-//             message: error?.error?.message || error?.message || 'Upload failed. Please try again.' 
-//           }
-//         }));
-//       })
-//     );
+//     return this.http.post<UploadResponse>(this.apiUrl, formData);
 //   }
 
-uploadDocument(file: File, department: string): Observable<UploadResponse> {
+private apiUrl = `${environment.PREVIEW_BASE_URL}/admin/upload`;
+
+  constructor(private http: HttpClient) {}
+
+  uploadDocument(file: File, department: string): Observable<UploadResponse> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('department', department);
 
-    const headers = new HttpHeaders({
-      'ngrok-skip-browser-warning': 'true'
-    });
-
-    return this.http.post<UploadResponse>(this.apiUrl, formData, { headers });
+    return this.http.post<UploadResponse>(this.apiUrl, formData);
   }
 }
+
 
 

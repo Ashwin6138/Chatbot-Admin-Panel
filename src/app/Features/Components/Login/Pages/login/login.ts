@@ -65,7 +65,7 @@ loginForm!: FormGroup;
           }
         }
 
-        this.router.navigate(['/dash']);
+        this.router.navigate(['/stats']);
       } else {
         alert('Invalid credentials!');
       }
