@@ -57,19 +57,23 @@
                 <p class="kb-section-desc">This will completely reset the knowledge base. You must upload a new folder after resetting.</p>
               </div>
             </div>
-            <button class="reset-btn" (click)="handleReset()">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <button 
+              class="reset-btn" 
+              [disabled]="isResetting"
+              (click)="handleReset()">
+              <svg *ngIf="!isResetting" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="1 4 1 10 7 10"></polyline>
                 <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
               </svg>
-              Reset Knowledge Base
+              <span *ngIf="isResetting">Resetting...</span>
+              <span *ngIf="!isResetting">Reset Knowledge Base</span>
             </button>
           </div>
 
           <!-- Full KB Re-Ingest Section -->
-          <div class="kb-section reingest-section" [class.disabled]="!isResetClicked">
+          <div class="kb-section reingest-section" [class.section-disabled]="!isResetClicked">
             <div class="kb-section-header">
-              <div class="kb-icon-wrapper">
+              <div class="kb-icon-wrapper" [class.icon-disabled]="!isResetClicked">
                 <svg class="kb-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                   <polyline points="17 8 12 3 7 8"></polyline>
@@ -78,11 +82,14 @@
               </div>
               <div class="kb-section-content">
                 <h3 class="kb-section-title">Full KB Re-Ingest</h3>
-                <p class="kb-section-desc">Upload a folder containing all documents to rebuild the knowledge base</p>
+                <p class="kb-section-desc">
+                  <span *ngIf="!isResetClicked">Upload a folder containing all documents to rebuild the knowledge base (Reset required first)</span>
+                  <span *ngIf="isResetClicked">Upload a folder containing all documents to rebuild the knowledge base</span>
+                </p>
               </div>
             </div>
             
-            <div class="folder-upload-area">
+            <div class="folder-upload-area" [class.upload-disabled]="!isResetClicked">
               <div class="upload-icon-wrapper">
                 <svg class="upload-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -91,7 +98,8 @@
                 </svg>
               </div>
               <p class="folder-upload-text">Select a folder to upload</p>
-              <p class="folder-upload-subtext">Please reset the knowledge base first</p>
+              <p class="folder-upload-subtext" *ngIf="!isResetClicked">Please reset the knowledge base first</p>
+              <p class="folder-upload-subtext" *ngIf="isResetClicked">Choose a folder containing your documents</p>
               
               <input 
                 type="file" 
@@ -100,32 +108,33 @@
                 webkitdirectory
                 directory
                 multiple
-                [disabled]="!isResetClicked"
+                [disabled]="!canUpload"
                 (change)="handleFolderSelect($event)">
               
               <button 
                 type="button" 
                 class="browse-folder-btn" 
-                [disabled]="!isResetClicked"
+                [disabled]="!canUpload"
                 (click)="triggerFolderInput()">
                 Browse folder
               </button>
 
               <p *ngIf="selectedFolder && selectedFolder.length > 0" class="selected-file">
-                Selected: {{ selectedFolder.length }} files
+                ✓ Selected: {{ selectedFolder.length }} file{{ selectedFolder.length !== 1 ? 's' : '' }}
               </p>
             </div>
 
             <button 
               class="upload-reingest-btn" 
-              [disabled]="!isResetClicked || !selectedFolder || selectedFolder.length === 0"
+              [disabled]="!canSubmitUpload"
               (click)="handleUploadAndReingest()">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg *ngIf="!isUploading" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="17 8 12 3 7 8"></polyline>
                 <line x1="12" y1="3" x2="12" y2="15"></line>
               </svg>
-              Upload & Re-Ingest
+              <span *ngIf="isUploading">Uploading...</span>
+              <span *ngIf="!isUploading">Upload & Re-Ingest</span>
             </button>
           </div>
         </div>
