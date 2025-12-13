@@ -26,10 +26,6 @@ export class Base {
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Reset the Knowledge Base
-   * DELETE endpoint to reset the knowledge base
-   */
   resetKnowledgeBase(): Observable<KnowledgeBaseResponse> {
     const headers = new HttpHeaders({
       'ngrok-skip-browser-warning': 'true'

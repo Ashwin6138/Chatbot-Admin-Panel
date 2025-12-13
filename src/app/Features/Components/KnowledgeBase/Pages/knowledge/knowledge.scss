@@ -90,6 +90,7 @@
   width: 20px;
   height: 20px;
   flex-shrink: 0;
+  margin-bottom: 2px; /* Moves icon down slightly for better alignment */
 }
 
 .feature-item span {
@@ -152,7 +153,6 @@
   display: flex;
   align-items: flex-start;
   gap: 16px;
-  margin-bottom: 24px;
 }
 
 .kb-icon-wrapper {
@@ -192,10 +192,10 @@
   font-size: 13px;
   color: #6b7280;
   line-height: 1.5;
-  margin: 0;
+  margin: 0 0 16px 0;
 }
 
-/* Reset Button */
+/* Reset Button - Now inside kb-section-content */
 .reset-btn {
   padding: 11px 24px;
   background-color: #f97316;
@@ -209,10 +209,16 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  margin-top: 8px;
 }
 
-.reset-btn:hover {
+.reset-btn:hover:not(:disabled) {
   background-color: #ea580c;
+}
+
+.reset-btn:disabled {
+  background-color: #fed7aa;
+  cursor: not-allowed;
 }
 
 .reset-btn svg {
@@ -228,6 +234,7 @@
   text-align: center;
   background-color: #fafafa;
   margin-bottom: 20px;
+  margin-top: 20px;
   transition: all 0.2s;
 }
 
@@ -328,38 +335,6 @@
   height: 18px;
 }
 
-/* Upload Button */
-.upload-btn {
-  width: 100%;
-  padding: 16px 28px;
-  background-color: #f97316;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.upload-btn:hover:not(:disabled) {
-  background-color: #ea580c;
-}
-
-.upload-btn:disabled {
-  background-color: #fed7aa;
-  cursor: not-allowed;
-}
-
-.upload-btn svg {
-  width: 20px;
-  height: 20px;
-}
-
 /* Footer */
 .footer {
   text-align: center;
@@ -407,14 +382,11 @@
 
   .kb-section-header {
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
   }
 }
 
-// Add these styles to your global styles.scss file
-
-// Success Snackbar
+// Snackbar styles
 .success-snackbar {
   background-color: #10b981 !important;
   color: white !important;
@@ -428,7 +400,6 @@
   }
 }
 
-// Error Snackbar
 .error-snackbar {
   background-color: #ef4444 !important;
   color: white !important;
@@ -442,7 +413,6 @@
   }
 }
 
-// Warning Snackbar
 .warning-snackbar {
   background-color: #f59e0b !important;
   color: white !important;
