@@ -48,7 +48,7 @@
   overflow: hidden;
 }
 
-/* Feature Tabs */
+/* Feature Tabs - Fixed Icon Alignment */
 .features-tabs {
   display: flex;
   border-bottom: 1px solid #e5e7eb;
@@ -90,11 +90,13 @@
   width: 20px;
   height: 20px;
   flex-shrink: 0;
-  margin-bottom: 2px; /* Moves icon down slightly for better alignment */
+  object-fit: contain;
+  display: block;
 }
 
 .feature-item span {
   white-space: nowrap;
+  line-height: 1;
 }
 
 /* Grey Inner Card */
@@ -172,9 +174,10 @@
 }
 
 .kb-icon {
-  color: white;
   width: 20px;
   height: 20px;
+  object-fit: contain;
+  display: block;
 }
 
 .kb-section-content {
@@ -195,7 +198,7 @@
   margin: 0 0 16px 0;
 }
 
-/* Reset Button - Now inside kb-section-content */
+/* Reset Button */
 .reset-btn {
   padding: 11px 24px;
   background-color: #f97316;
@@ -221,9 +224,12 @@
   cursor: not-allowed;
 }
 
-.reset-btn svg {
-  width: 16px;
-  height: 16px;
+.reset-btn img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
 }
 
 /* Folder Upload Area */
@@ -252,7 +258,7 @@
 .upload-icon {
   width: 28px;
   height: 28px;
-  color: #9ca3af;
+  object-fit: contain;
   display: block;
 }
 
@@ -330,9 +336,12 @@
   cursor: not-allowed;
 }
 
-.upload-reingest-btn svg {
+.upload-reingest-btn img {
   width: 18px;
   height: 18px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
 }
 
 /* Footer */
@@ -342,6 +351,11 @@
   color: #6b7280;
   padding: 20px;
   font-weight: 500;
+}
+
+/* Ensure all images render properly */
+img {
+  vertical-align: middle;
 }
 
 /* Responsive */
@@ -386,42 +400,42 @@
   }
 }
 
-// Snackbar styles
+/* Snackbar styles */
 .success-snackbar {
   background-color: #10b981 !important;
   color: white !important;
-  
-  .mat-mdc-snack-bar-label {
-    color: white !important;
-  }
-  
-  .mat-mdc-button {
-    color: white !important;
-  }
+}
+
+.success-snackbar .mat-mdc-snack-bar-label {
+  color: white !important;
+}
+
+.success-snackbar .mat-mdc-button {
+  color: white !important;
 }
 
 .error-snackbar {
   background-color: #ef4444 !important;
   color: white !important;
-  
-  .mat-mdc-snack-bar-label {
-    color: white !important;
-  }
-  
-  .mat-mdc-button {
-    color: white !important;
-  }
+}
+
+.error-snackbar .mat-mdc-snack-bar-label {
+  color: white !important;
+}
+
+.error-snackbar .mat-mdc-button {
+  color: white !important;
 }
 
 .warning-snackbar {
   background-color: #f59e0b !important;
   color: white !important;
-  
-  .mat-mdc-snack-bar-label {
-    color: white !important;
-  }
-  
-  .mat-mdc-button {
-    color: white !important;
-  }
+}
+
+.warning-snackbar .mat-mdc-snack-bar-label {
+  color: white !important;
+}
+
+.warning-snackbar .mat-mdc-button {
+  color: white !important;
 }

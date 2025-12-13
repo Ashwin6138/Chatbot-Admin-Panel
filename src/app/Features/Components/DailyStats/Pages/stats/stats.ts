@@ -28,6 +28,8 @@ interface DailyStatistics {
 
 
 
+
+
 // export class Stats implements OnInit, AfterViewInit {
 //   // Card Statistics
 //   totalQuestionsToday: number = 0;
@@ -58,7 +60,8 @@ interface DailyStatistics {
 //   constructor(
 //     private router: Router,
 //     private snackBar: MatSnackBar,
-//     private dailyStatsService: DailyStats
+//     private dailyStatsService: DailyStats,
+//     private cdr: ChangeDetectorRef
 //   ) {
 //     this.dataSource = new MatTableDataSource<DailyStatsTableData>([]);
 //   }
@@ -70,6 +73,7 @@ interface DailyStatistics {
 
 //   ngAfterViewInit(): void {
 //     this.dataSource.paginator = this.paginator;
+//     this.cdr.detectChanges();
 //   }
 
 //   loadDepartments(): void {
@@ -105,6 +109,8 @@ interface DailyStatistics {
 
 //         if (this.paginator) {
 //           this.dataSource.paginator = this.paginator;
+//           this.paginator.pageIndex = 0;
+//           this.cdr.detectChanges();
 //         }
 //       },
 //       error: (error: any) => {
@@ -158,26 +164,23 @@ interface DailyStatistics {
 //   }
 
 //   navigateToUpload(): void {
-//     this.router.navigate(['/upload-document']);
+//     this.router.navigate(['/upload']);
 //   }
 
 //   navigateToKnowledgeBase(): void {
-//     this.router.navigate(['/knowledge-base']);
+//     this.router.navigate(['/knowledge']);
 //   }
 
 //   navigateToStats(): void {
-//     this.router.navigate(['/daily-stats']);
+//     this.router.navigate(['/stats']);
 //   }
 // }
 
-
 export class Stats implements OnInit, AfterViewInit {
-  // Card Statistics
   totalQuestionsToday: number = 0;
   successfulResolvesToday: number = 0;
   unresolvedToday: number = 0;
 
-  // Table Configuration
   displayedColumns: string[] = [
     'sNo',
     'date',
@@ -190,13 +193,14 @@ export class Stats implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<DailyStatsTableData>;
   isLoading: boolean = false;
 
-  // Filter properties
   selectedStartDate: Date | null = null;
   selectedEndDate: Date | null = null;
   selectedDepartment: string = '';
   departments: string[] = [];
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  private fullStatsData: any[] = [];
+
+  @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
 
   constructor(
     private router: Router,
@@ -221,6 +225,7 @@ export class Stats implements OnInit, AfterViewInit {
     this.dailyStatsService.getAllDepartments().subscribe({
       next: (departments: string[]) => {
         this.departments = departments;
+        this.cdr.detectChanges();
       },
       error: (error: any) => {
         console.error('Error loading departments:', error);
@@ -238,31 +243,45 @@ export class Stats implements OnInit, AfterViewInit {
       ? this.formatDate(this.selectedEndDate) 
       : undefined;
 
-    this.dailyStatsService.getDailyStatistics(
+    this.dailyStatsService.getDailyStatisticsRaw(
       this.selectedDepartment || undefined,
       startDate,
       endDate
     ).subscribe({
-      next: (data: DailyStatsTableData[]) => {
-        this.dataSource.data = data;
+      next: (data: any[]) => {
+        this.fullStatsData = data;
+
+        const tableData = data.map((item, index) => ({
+          sNo: index + 1,
+          date: item.date,
+          department: item.department,
+          totalQuestions: item.total_questions,
+          successfulResolves: item.successful_resolves,
+          unresolvedQueries: item.unresolved_queries?.length || 0,
+          id: item.id
+        }));
+
+        this.dataSource.data = tableData;
         this.calculateCardStats(data);
         this.isLoading = false;
 
+        this.cdr.detectChanges();
+        
         if (this.paginator) {
           this.dataSource.paginator = this.paginator;
-          this.paginator.pageIndex = 0;
-          this.cdr.detectChanges();
+          this.paginator.firstPage();
         }
       },
       error: (error: any) => {
         console.error('Error loading daily statistics:', error);
         this.snackBar.open('Error loading data', 'Close', { duration: 3000 });
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
 
-  calculateCardStats(data: DailyStatsTableData[]): void {
+  calculateCardStats(data: any[]): void {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const todayStr = this.formatDate(today);
@@ -270,13 +289,13 @@ export class Stats implements OnInit, AfterViewInit {
     const todayData = data.filter(item => item.date === todayStr);
 
     this.totalQuestionsToday = todayData.reduce(
-      (sum, item) => sum + item.totalQuestions, 0
+      (sum, item) => sum + item.total_questions, 0
     );
     this.successfulResolvesToday = todayData.reduce(
-      (sum, item) => sum + item.successfulResolves, 0
+      (sum, item) => sum + item.successful_resolves, 0
     );
     this.unresolvedToday = todayData.reduce(
-      (sum, item) => sum + item.unresolvedQueries, 0
+      (sum, item) => sum + (item.unresolved_queries?.length || 0), 0
     );
   }
 
@@ -291,28 +310,30 @@ export class Stats implements OnInit, AfterViewInit {
     this.loadDailyStats();
   }
 
-  clearFilters(): void {
-    this.selectedStartDate = null;
-    this.selectedEndDate = null;
-    this.selectedDepartment = '';
-    this.loadDailyStats();
-  }
-
   calculatePercentage(value: number, total: number): string {
     if (total === 0) return '0%';
     const percentage = (value / total) * 100;
     return `${percentage.toFixed(0)}%`;
   }
 
-  navigateToUpload(): void {
-    this.router.navigate(['/upload']);
-  }
+  onRowClick(row: any): void {
+    const fullData = this.fullStatsData.find(item => 
+      item.date === row.date && item.department === row.department
+    );
 
-  navigateToKnowledgeBase(): void {
-    this.router.navigate(['/knowledge']);
-  }
+    if (fullData && fullData.unresolved_queries && fullData.unresolved_queries.length > 0) {
+      localStorage.setItem('selectedConversations', JSON.stringify(fullData.unresolved_queries));
+      localStorage.setItem('selectedRowInfo', JSON.stringify({
+        date: row.date,
+        department: row.department,
+        totalQuestions: row.totalQuestions,
+        successfulResolves: row.successfulResolves,
+        unresolvedQueries: row.unresolvedQueries
+      }));
 
-  navigateToStats(): void {
-    this.router.navigate(['/stats']);
+      this.router.navigate(['/conversation']);
+    } else {
+      this.snackBar.open('No unresolved queries for this record', 'Close', { duration: 2000 });
+    }
   }
 }

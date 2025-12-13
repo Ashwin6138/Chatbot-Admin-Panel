@@ -1,0 +1,279 @@
+.dashboard-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #e8eef3;
+}
+
+.main-content {
+  min-height: calc(100vh - 64px);
+  background-color: #e8eef3;
+  padding: 30px 20px;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.white-card-wrapper {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+/* Header Section */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  gap: 20px;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.header-info {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.department-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+
+  .department-icon {
+    color: #f97316;
+    flex-shrink: 0;
+  }
+
+  span {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111827;
+  }
+}
+
+.header-stats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  .stat-item {
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+}
+
+/* Chat Container */
+.chat-container {
+  background: #f9fafb;
+  min-height: 500px;
+  max-height: 700px;
+  overflow-y: auto;
+}
+
+.messages-wrapper {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+/* Conversation Group */
+.conversation-group {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.conversation-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.conversation-number {
+  font-size: 16px;
+  font-weight: 700;
+  color: #f97316;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.conversation-divider {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(to right, #f97316, transparent);
+}
+
+.conversation-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.message-row {
+  display: flex;
+  width: 100%;
+
+  &.user-row {
+    justify-content: flex-start;
+  }
+
+  &.assistant-row {
+    justify-content: flex-end;
+  }
+}
+
+.message-bubble {
+  max-width: 70%;
+  padding: 16px 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+
+  &.user-bubble {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-top-left-radius: 4px;
+  }
+
+  &.assistant-bubble {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 1px solid #bae6fd;
+    border-top-right-radius: 4px;
+  }
+}
+
+.message-header {
+  margin-bottom: 8px;
+}
+
+.role-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6b7280;
+}
+
+.message-content {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #374151;
+  word-wrap: break-word;
+
+  ::ng-deep {
+    strong {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    a {
+      color: #3b82f6;
+      text-decoration: underline;
+
+      &:hover {
+        color: #2563eb;
+      }
+    }
+
+    br {
+      display: block;
+      content: "";
+      margin: 4px 0;
+    }
+  }
+}
+
+.no-messages {
+  text-align: center;
+  padding: 60px 20px;
+  color: #9ca3af;
+  font-size: 16px;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  font-size: 14px;
+  color: #6b7280;
+  padding: 20px;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .header-info {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .header-stats {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .messages-wrapper {
+    padding: 20px 16px;
+    gap: 36px;
+  }
+
+  .message-bubble {
+    max-width: 85%;
+  }
+
+  .conversation-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .conversation-divider {
+    width: 100%;
+  }
+}

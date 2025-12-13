@@ -29,6 +29,7 @@ export interface DailyStatsTableData {
   totalQuestions: number;
   successfulResolves: number;
   unresolvedQueries: number;
+  id?: number;
 }
 
 @Injectable({
@@ -43,15 +44,16 @@ export class DailyStats {
     return new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'ngrok-skip-browser-warning': 'true'  // Required for ngrok
+      'ngrok-skip-browser-warning': 'true'
     });
   }
 
-  getDailyStatistics(
+  // Get raw data for storing conversations
+  getDailyStatisticsRaw(
     department?: string,
     startDate?: string,
     endDate?: string
-  ): Observable<DailyStatsTableData[]> {
+  ): Observable<DailyStatistics[]> {
     let params = new HttpParams();
 
     if (department) {
@@ -69,18 +71,7 @@ export class DailyStats {
     return this.http.get<DailyStatistics[]>(this.apiUrl, { 
       params, 
       headers 
-    }).pipe(
-      map((data: DailyStatistics[]) => 
-        data.map((item, index) => ({
-          sNo: index + 1,
-          date: item.date,
-          department: item.department,
-          totalQuestions: item.total_questions,
-          successfulResolves: item.successful_resolves,
-          unresolvedQueries: item.unresolved_queries?.length || 0
-        }))
-      )
-    );
+    });
   }
 
   // Get all departments for filter dropdown

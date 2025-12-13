@@ -1,0 +1,77 @@
+<div class="dashboard-container">
+  <app-nav></app-nav>
+
+  <div class="main-content">
+    <div class="container">
+      <div class="white-card-wrapper">
+        
+        <!-- Header Section with Back Button and Department Info -->
+        <div class="header-section">
+          <button class="back-btn" (click)="goBack()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            Back to Stats
+          </button>
+
+          <div class="header-info" *ngIf="rowInfo">
+            <div class="department-badge">
+              <svg class="department-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <span>{{rowInfo.department}}</span>
+            </div>
+            <div class="header-stats">
+              <span class="stat-item">📅 {{rowInfo.date}}</span>
+              <span class="stat-item">❓ Total: {{rowInfo.totalQuestions}}</span>
+              <span class="stat-item">⚠️ Unresolved: {{rowInfo.unresolvedQueries}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Container with All Conversations -->
+        <div class="chat-container">
+          <div class="messages-wrapper">
+            <div *ngFor="let conv of conversations; let i = index" class="conversation-group">
+              <!-- Conversation Header -->
+              <div class="conversation-header">
+                <div class="conversation-number">Conversation {{i + 1}}</div>
+                <div class="conversation-divider"></div>
+              </div>
+
+              <!-- Messages in this conversation -->
+              <div class="conversation-messages">
+                <div 
+                  *ngFor="let message of conv.conversation"
+                  class="message-row"
+                  [class.user-row]="message.role === 'user'"
+                  [class.assistant-row]="message.role === 'assistant'">
+                  
+                  <div class="message-bubble" 
+                       [class.user-bubble]="message.role === 'user'" 
+                       [class.assistant-bubble]="message.role === 'assistant'">
+                    <div class="message-header">
+                      <span class="role-label">{{message.role === 'user' ? 'User' : 'Assistant'}}</span>
+                    </div>
+                    <div class="message-content" [innerHTML]="formatContent(message.content)"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="conversations.length === 0" class="no-messages">
+              No conversations available
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        Powered by BYT strategy group
+      </div>
+    </div>
+  </div>
+</div>
