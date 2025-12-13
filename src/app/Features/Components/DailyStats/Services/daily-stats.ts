@@ -38,7 +38,6 @@ export interface DailyStatsTableData {
 })
 export class DailyStats {
   // private apiUrl = 'https://vashti-unseethed-adjectively.ngrok-free.app/admin/stats';
-  // private readonly PREVIEW_BASE_URL = environment.PREVIEW_BASE_URL;
 
 
   private apiUrl = `${environment.PREVIEW_BASE_URL}/admin/stats`;
