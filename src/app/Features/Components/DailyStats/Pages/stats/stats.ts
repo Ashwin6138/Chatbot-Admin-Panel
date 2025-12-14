@@ -221,17 +221,23 @@ export class Stats implements OnInit, AfterViewInit {
     this.cdr.detectChanges();
   }
 
+  // loadDepartments(): void {
+  //   this.dailyStatsService.getAllDepartments().subscribe({
+  //     next: (departments: string[]) => {
+  //       this.departments = departments;
+  //       this.cdr.detectChanges();
+  //     },
+  //     error: (error: any) => {
+  //       console.error('Error loading departments:', error);
+  //     }
+  //   });
+  // }
+
   loadDepartments(): void {
-    this.dailyStatsService.getAllDepartments().subscribe({
-      next: (departments: string[]) => {
-        this.departments = departments;
-        this.cdr.detectChanges();
-      },
-      error: (error: any) => {
-        console.error('Error loading departments:', error);
-      }
-    });
-  }
+  // Set predefined departments instead of loading from service
+  this.departments = ['HR', 'Finance', 'Facilities', 'IT'];
+  this.cdr.detectChanges();
+}
 
   loadDailyStats(): void {
     this.isLoading = true;
