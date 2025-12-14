@@ -90,11 +90,15 @@
   width: 20px;
   height: 20px;
   flex-shrink: 0;
+  object-fit: contain;
+  display: block;
 }
 
 .feature-item span {
   white-space: nowrap;
+  line-height: 1;
 }
+
 
 /* Grey Inner Card */
 .grey-inner-card {

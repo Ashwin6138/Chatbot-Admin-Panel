@@ -158,8 +158,8 @@
 }
 
 .kb-icon-wrapper {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   min-width: 40px;
   border-radius: 50%;
   background-color: #f97316;
@@ -167,6 +167,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+   margin-top: 18px;
 }
 
 .kb-icon-wrapper.warning {
