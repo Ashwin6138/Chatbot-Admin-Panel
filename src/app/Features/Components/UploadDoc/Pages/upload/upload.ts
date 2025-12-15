@@ -16,7 +16,7 @@ import { RouterLink } from '@angular/router';
 
 
 export class Upload {
-  selectedDepartment: string = 'BYT';
+  selectedDepartment: string = 'Facilities';
   dragActive: boolean = false;
   selectedFile: File | null = null;
   isUploading: boolean = false;
