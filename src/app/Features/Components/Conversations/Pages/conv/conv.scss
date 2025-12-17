@@ -23,6 +23,42 @@
   overflow: hidden;
 }
 
+
+.header-stats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 500;
+    white-space: nowrap;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      line-height: 18px;
+      color: #6b7280; /* Default gray */
+    }
+
+    &:first-child mat-icon {
+      color: #3b82f6; /* Blue for date icon */
+    }
+
+    &:nth-child(2) mat-icon {
+      color: #10b981; /* Green for total icon */
+    }
+
+    &:last-child mat-icon {
+      color: #f97316; /* Orange for unresolved icon */
+    }
+  }
+}
 /* Header Section */
 .header-section {
   display: flex;

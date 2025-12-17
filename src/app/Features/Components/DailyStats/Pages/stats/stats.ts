@@ -287,23 +287,18 @@ export class Stats implements OnInit, AfterViewInit {
     });
   }
 
-  calculateCardStats(data: any[]): void {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayStr = this.formatDate(today);
-
-    const todayData = data.filter(item => item.date === todayStr);
-
-    this.totalQuestionsToday = todayData.reduce(
-      (sum, item) => sum + item.total_questions, 0
-    );
-    this.successfulResolvesToday = todayData.reduce(
-      (sum, item) => sum + item.successful_resolves, 0
-    );
-    this.unresolvedToday = todayData.reduce(
-      (sum, item) => sum + (item.unresolved_queries?.length || 0), 0
-    );
-  }
+ calculateCardStats(data: any[]): void {
+  // Calculate totals from ALL data (not filtered by date)
+  this.totalQuestionsToday = data.reduce(
+    (sum, item) => sum + item.total_questions, 0
+  );
+  this.successfulResolvesToday = data.reduce(
+    (sum, item) => sum + item.successful_resolves, 0
+  );
+  this.unresolvedToday = data.reduce(
+    (sum, item) => sum + (item.unresolved_queries?.length || 0), 0
+  );
+}
 
   formatDate(date: Date): string {
     const year = date.getFullYear();
