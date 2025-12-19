@@ -29,14 +29,11 @@ interface DailyStatistics {
 
 
 
-
 // export class Stats implements OnInit, AfterViewInit {
-//   // Card Statistics
 //   totalQuestionsToday: number = 0;
 //   successfulResolvesToday: number = 0;
 //   unresolvedToday: number = 0;
 
-//   // Table Configuration
 //   displayedColumns: string[] = [
 //     'sNo',
 //     'date',
@@ -49,13 +46,14 @@ interface DailyStatistics {
 //   dataSource: MatTableDataSource<DailyStatsTableData>;
 //   isLoading: boolean = false;
 
-//   // Filter properties
 //   selectedStartDate: Date | null = null;
 //   selectedEndDate: Date | null = null;
 //   selectedDepartment: string = '';
 //   departments: string[] = [];
 
-//   @ViewChild(MatPaginator) paginator!: MatPaginator;
+//   private fullStatsData: any[] = [];
+
+//   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
 
 //   constructor(
 //     private router: Router,
@@ -76,16 +74,23 @@ interface DailyStatistics {
 //     this.cdr.detectChanges();
 //   }
 
+//   // loadDepartments(): void {
+//   //   this.dailyStatsService.getAllDepartments().subscribe({
+//   //     next: (departments: string[]) => {
+//   //       this.departments = departments;
+//   //       this.cdr.detectChanges();
+//   //     },
+//   //     error: (error: any) => {
+//   //       console.error('Error loading departments:', error);
+//   //     }
+//   //   });
+//   // }
+
 //   loadDepartments(): void {
-//     this.dailyStatsService.getAllDepartments().subscribe({
-//       next: (departments: string[]) => {
-//         this.departments = departments;
-//       },
-//       error: (error: any) => {
-//         console.error('Error loading departments:', error);
-//       }
-//     });
-//   }
+//   // Set predefined departments instead of loading from service
+//   this.departments = ['HR', 'Finance', 'Facilities', 'IT'];
+//   this.cdr.detectChanges();
+// }
 
 //   loadDailyStats(): void {
 //     this.isLoading = true;
@@ -97,47 +102,56 @@ interface DailyStatistics {
 //       ? this.formatDate(this.selectedEndDate) 
 //       : undefined;
 
-//     this.dailyStatsService.getDailyStatistics(
+//     this.dailyStatsService.getDailyStatisticsRaw(
 //       this.selectedDepartment || undefined,
 //       startDate,
 //       endDate
 //     ).subscribe({
-//       next: (data: DailyStatsTableData[]) => {
-//         this.dataSource.data = data;
+//       next: (data: any[]) => {
+//         this.fullStatsData = data;
+
+//         const tableData = data.map((item, index) => ({
+//           sNo: index + 1,
+//           date: item.date,
+//           department: item.department,
+//           totalQuestions: item.total_questions,
+//           successfulResolves: item.successful_resolves,
+//           unresolvedQueries: item.unresolved_queries?.length || 0,
+//           id: item.id
+//         }));
+
+//         this.dataSource.data = tableData;
 //         this.calculateCardStats(data);
 //         this.isLoading = false;
 
+//         this.cdr.detectChanges();
+        
 //         if (this.paginator) {
 //           this.dataSource.paginator = this.paginator;
-//           this.paginator.pageIndex = 0;
-//           this.cdr.detectChanges();
+//           this.paginator.firstPage();
 //         }
 //       },
 //       error: (error: any) => {
 //         console.error('Error loading daily statistics:', error);
 //         this.snackBar.open('Error loading data', 'Close', { duration: 3000 });
 //         this.isLoading = false;
+//         this.cdr.detectChanges();
 //       }
 //     });
 //   }
 
-//   calculateCardStats(data: DailyStatsTableData[]): void {
-//     const today = new Date();
-//     today.setHours(0, 0, 0, 0);
-//     const todayStr = this.formatDate(today);
-
-//     const todayData = data.filter(item => item.date === todayStr);
-
-//     this.totalQuestionsToday = todayData.reduce(
-//       (sum, item) => sum + item.totalQuestions, 0
-//     );
-//     this.successfulResolvesToday = todayData.reduce(
-//       (sum, item) => sum + item.successfulResolves, 0
-//     );
-//     this.unresolvedToday = todayData.reduce(
-//       (sum, item) => sum + item.unresolvedQueries, 0
-//     );
-//   }
+//  calculateCardStats(data: any[]): void {
+//   // Calculate totals from ALL data (not filtered by date)
+//   this.totalQuestionsToday = data.reduce(
+//     (sum, item) => sum + item.total_questions, 0
+//   );
+//   this.successfulResolvesToday = data.reduce(
+//     (sum, item) => sum + item.successful_resolves, 0
+//   );
+//   this.unresolvedToday = data.reduce(
+//     (sum, item) => sum + (item.unresolved_queries?.length || 0), 0
+//   );
+// }
 
 //   formatDate(date: Date): string {
 //     const year = date.getFullYear();
@@ -150,31 +164,35 @@ interface DailyStatistics {
 //     this.loadDailyStats();
 //   }
 
-//   clearFilters(): void {
-//     this.selectedStartDate = null;
-//     this.selectedEndDate = null;
-//     this.selectedDepartment = '';
-//     this.loadDailyStats();
-//   }
-
 //   calculatePercentage(value: number, total: number): string {
 //     if (total === 0) return '0%';
 //     const percentage = (value / total) * 100;
 //     return `${percentage.toFixed(0)}%`;
 //   }
 
-//   navigateToUpload(): void {
-//     this.router.navigate(['/upload']);
-//   }
+//   onRowClick(row: any): void {
+//     const fullData = this.fullStatsData.find(item => 
+//       item.date === row.date && item.department === row.department
+//     );
 
-//   navigateToKnowledgeBase(): void {
-//     this.router.navigate(['/knowledge']);
-//   }
+//     if (fullData && fullData.unresolved_queries && fullData.unresolved_queries.length > 0) {
+//       localStorage.setItem('selectedConversations', JSON.stringify(fullData.unresolved_queries));
+//       localStorage.setItem('selectedRowInfo', JSON.stringify({
+//         date: row.date,
+//         department: row.department,
+//         totalQuestions: row.totalQuestions,
+//         successfulResolves: row.successfulResolves,
+//         unresolvedQueries: row.unresolvedQueries
+//       }));
 
-//   navigateToStats(): void {
-//     this.router.navigate(['/stats']);
+//       this.router.navigate(['/conversation']);
+//     } else {
+//       this.snackBar.open('No unresolved queries for this record', 'Close', { duration: 2000 });
+//     }
 //   }
 // }
+
+
 
 export class Stats implements OnInit, AfterViewInit {
   totalQuestionsToday: number = 0;
@@ -221,32 +239,20 @@ export class Stats implements OnInit, AfterViewInit {
     this.cdr.detectChanges();
   }
 
-  // loadDepartments(): void {
-  //   this.dailyStatsService.getAllDepartments().subscribe({
-  //     next: (departments: string[]) => {
-  //       this.departments = departments;
-  //       this.cdr.detectChanges();
-  //     },
-  //     error: (error: any) => {
-  //       console.error('Error loading departments:', error);
-  //     }
-  //   });
-  // }
-
   loadDepartments(): void {
-  // Set predefined departments instead of loading from service
-  this.departments = ['HR', 'Finance', 'Facilities', 'IT'];
-  this.cdr.detectChanges();
-}
+    // Set predefined departments instead of loading from service
+    this.departments = ['HR', 'Finance', 'Facilities', 'IT'];
+    this.cdr.detectChanges();
+  }
 
   loadDailyStats(): void {
     this.isLoading = true;
 
     const startDate = this.selectedStartDate 
-      ? this.formatDate(this.selectedStartDate) 
+      ? this.formatDateForAPI(this.selectedStartDate) 
       : undefined;
     const endDate = this.selectedEndDate 
-      ? this.formatDate(this.selectedEndDate) 
+      ? this.formatDateForAPI(this.selectedEndDate) 
       : undefined;
 
     this.dailyStatsService.getDailyStatisticsRaw(
@@ -257,9 +263,17 @@ export class Stats implements OnInit, AfterViewInit {
       next: (data: any[]) => {
         this.fullStatsData = data;
 
-        const tableData = data.map((item, index) => ({
+        // Sort data by date in descending order (most recent first)
+        const sortedData = [...data].sort((a, b) => {
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          return dateB.getTime() - dateA.getTime();
+        });
+
+        const tableData = sortedData.map((item, index) => ({
           sNo: index + 1,
-          date: item.date,
+          date: this.formatDateForDisplay(item.date),
+          originalDate: item.date, // Keep original date for filtering
           department: item.department,
           totalQuestions: item.total_questions,
           successfulResolves: item.successful_resolves,
@@ -287,24 +301,34 @@ export class Stats implements OnInit, AfterViewInit {
     });
   }
 
- calculateCardStats(data: any[]): void {
-  // Calculate totals from ALL data (not filtered by date)
-  this.totalQuestionsToday = data.reduce(
-    (sum, item) => sum + item.total_questions, 0
-  );
-  this.successfulResolvesToday = data.reduce(
-    (sum, item) => sum + item.successful_resolves, 0
-  );
-  this.unresolvedToday = data.reduce(
-    (sum, item) => sum + (item.unresolved_queries?.length || 0), 0
-  );
-}
+  calculateCardStats(data: any[]): void {
+    // Calculate totals from ALL data (not filtered by date)
+    this.totalQuestionsToday = data.reduce(
+      (sum, item) => sum + item.total_questions, 0
+    );
+    this.successfulResolvesToday = data.reduce(
+      (sum, item) => sum + item.successful_resolves, 0
+    );
+    this.unresolvedToday = data.reduce(
+      (sum, item) => sum + (item.unresolved_queries?.length || 0), 0
+    );
+  }
 
-  formatDate(date: Date): string {
+  // Format date for API calls (yyyy-mm-dd)
+  formatDateForAPI(date: Date): string {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  // Format date for display (dd-mm-yyyy)
+  formatDateForDisplay(dateString: string): string {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
   }
 
   applyFilter(): void {
@@ -318,14 +342,15 @@ export class Stats implements OnInit, AfterViewInit {
   }
 
   onRowClick(row: any): void {
+    // Use originalDate for finding the data
     const fullData = this.fullStatsData.find(item => 
-      item.date === row.date && item.department === row.department
+      item.date === row.originalDate && item.department === row.department
     );
 
     if (fullData && fullData.unresolved_queries && fullData.unresolved_queries.length > 0) {
       localStorage.setItem('selectedConversations', JSON.stringify(fullData.unresolved_queries));
       localStorage.setItem('selectedRowInfo', JSON.stringify({
-        date: row.date,
+        date: row.date, // This is already formatted
         department: row.department,
         totalQuestions: row.totalQuestions,
         successfulResolves: row.successfulResolves,
