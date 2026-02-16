@@ -5,6 +5,7 @@ import { Upload } from './Features/Components/UploadDoc/Pages/upload/upload';
 import { Knowledge } from './Features/Components/KnowledgeBase/Pages/knowledge/knowledge';
 import { conv } from './Features/Components/Conversations/Pages/conv/conv';
 import { AuthGuard } from './Core/Guards/auth-guard';
+import { LoginGuard } from './Core/Guards/loginGuard';
 
 
 
@@ -12,7 +13,7 @@ import { AuthGuard } from './Core/Guards/auth-guard';
 export const routes: Routes = [
   
   {path: '', redirectTo: 'login', pathMatch: 'full'},
-  {path:'login',component:Login},
+  {path:'login',component:Login,canActivate:[LoginGuard]},
   { path: 'stats', component: Stats, canActivate: [AuthGuard] },
   { path: 'upload', component: Upload, canActivate: [AuthGuard] },
   { path: 'knowledge', component: Knowledge, canActivate: [AuthGuard] },

@@ -232,6 +232,19 @@ export class Stats implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.loadDepartments();
     this.loadDailyStats();
+    this.checkAuthentication();
+  }
+
+
+private checkAuthentication(): void {
+    // Check if user is logged in
+    const isLoggedLocal = typeof window !== 'undefined' && localStorage.getItem('isLoggedIn') === 'true';
+    const isLoggedSession = typeof window !== 'undefined' && sessionStorage.getItem('isLoggedIn') === 'true';
+
+    if (!isLoggedLocal && !isLoggedSession) {
+      // User is not logged in, redirect to login page
+      this.router.navigate(['/login']);
+    }
   }
 
   ngAfterViewInit(): void {
