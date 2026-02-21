@@ -15,7 +15,7 @@ export class LoginGuard implements CanActivate {
 
     if (isLoggedLocal || isLoggedSession) {
       // User is already logged in, redirect to dashboard/history
-      return this.router.createUrlTree(['/history']);
+      return this.router.createUrlTree(['/main']);
     }
 
     // User is not logged in, allow access to login page
